@@ -28,6 +28,7 @@ pub struct ArcNode {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Arc<str>>,
@@ -42,6 +43,7 @@ pub struct ArcWay {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Arc<str>>,
@@ -56,6 +58,7 @@ pub struct ArcRelation {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Arc<str>>,
@@ -84,6 +87,9 @@ impl OSMObjBase for ArcOSMObj {
     fn changeset_id(&self) -> Option<u32> {
         func_call_inner_get!(self, changeset_id)
     }
+    fn action(&self) -> &Option<ActionType> {
+        func_call_inner_get!(self, action)
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         func_call_inner_get!(self, timestamp)
     }
@@ -105,6 +111,9 @@ impl OSMObjBase for ArcOSMObj {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         func_call_inner_set!(self, set_changeset_id, val);
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        func_call_inner_set!(self, set_action, val);
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         func_call_inner_set!(self, set_timestamp, val);
@@ -263,6 +272,9 @@ impl OSMObjBase for ArcNode {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -284,6 +296,9 @@ impl OSMObjBase for ArcNode {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
@@ -380,6 +395,9 @@ impl OSMObjBase for ArcWay {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -401,6 +419,9 @@ impl OSMObjBase for ArcWay {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
@@ -494,6 +515,9 @@ impl OSMObjBase for ArcRelation {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -515,6 +539,9 @@ impl OSMObjBase for ArcRelation {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();

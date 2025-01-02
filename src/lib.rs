@@ -26,6 +26,7 @@ extern crate serde_json;
 extern crate smallvec;
 extern crate smol_str;
 
+use obj_types::ActionType;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::convert::{TryFrom, TryInto};
@@ -320,9 +321,11 @@ pub trait OSMObjBase: PartialEq + Debug + Clone {
     fn deleted(&self) -> bool;
     fn set_deleted(&mut self, val: bool);
     fn changeset_id(&self) -> Option<u32>;
+    fn action(&self) -> &Option<ActionType>;
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>);
     fn timestamp(&self) -> &Option<TimestampFormat>;
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>);
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>);
     fn uid(&self) -> Option<u32>;
     fn set_uid(&mut self, val: impl Into<Option<u32>>);
     fn user(&self) -> Option<&str>;

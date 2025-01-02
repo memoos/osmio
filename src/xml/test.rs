@@ -2,7 +2,7 @@
 use std::io::Cursor;
 use smol_str::SmolStr;
 
-use crate::obj_types::{StringNode, StringNodeBuilder, StringOSMObj, StringRelation, StringRelationBuilder, StringWay, StringWayBuilder};
+use crate::obj_types::{ActionType, StringNode, StringNodeBuilder, StringOSMObj, StringRelation, StringRelationBuilder, StringWay, StringWayBuilder};
 use crate::{Lat, Lon, OSMObjBase, OSMObjectType};
 
 use super::{XMLReader, XMLWriter};
@@ -193,4 +193,47 @@ fn test_writer() {
     let output = String::from_utf8(output_cursor).unwrap();
     //println!("{}", output);
     assert_eq!(output, format!("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<osm version=\"0.6\" generator=\"osmio/{}\">\n\t<node id=\"1\" visible=\"true\" version=\"1\" user=\"Username\" uid=\"2\" changeset=\"1\" timestamp=\"900 CE\" lat=\"1\" lon=\"2\">\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</node>\n\t<way id=\"2\" visible=\"true\" version=\"1\" user=\"Username\" uid=\"2\" changeset=\"1\" timestamp=\"900 CE\">\n\t\t<nd ref=\"1\" />\n\t\t<nd ref=\"2\" />\n\t\t<nd ref=\"3\" />\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</way>\n\t<relation id=\"2\" visible=\"true\" version=\"1\" user=\"Username\" uid=\"2\" changeset=\"1\" timestamp=\"900 CE\">\n\t\t<member type=\"node\" ref=\"1\" role=\"\" />\n\t\t<member type=\"way\" ref=\"2\" role=\"\" />\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</relation>\n</osm>", version()));
+}
+
+
+#[test]
+fn test_writer_josm() {
+    let mut output_cursor = Vec::new();
+    let mut xml_writer = XMLWriter::new(&mut output_cursor);
+
+    let mut tags = HashMap::new();
+    tags.insert("highway".to_string(), "nevar".to_string());
+    let mut node = StringNodeBuilder::default()._id(-1)._action(ActionType::Modify)._deleted(false).build().unwrap();
+    node.set_lat_lon((1.,2.));
+    node.set_user("Username");
+    node.set_uid(2);
+    node.set_tag("highway", "nevar");
+    xml_writer.write_obj(&StringOSMObj::Node(node)).ok();
+
+    let mut way = StringWayBuilder::default()._id(-2).build().unwrap();
+    way.set_deleted(false);
+    way.set_action(ActionType::Modify);
+    way.set_user("Username");
+    way.set_uid(2);
+    way.set_tag("highway", "nevar");
+    way.set_nodes(vec![-1, 2, 3]);
+    xml_writer.write_obj(&StringOSMObj::Way(way)).ok();
+
+    let mut relation = StringRelationBuilder::default()._id(-2).build().unwrap();
+    relation.set_action(ActionType::Modify);
+    relation.set_deleted(false);
+    relation.set_user("Username");
+    relation.set_uid(2);
+    relation.set_tag("highway", "nevar");
+    relation.set_members(vec![(OSMObjectType::Node, -1, ""),(OSMObjectType::Way, -2, "")]);
+    xml_writer.write_obj(&StringOSMObj::Relation(relation)).ok();
+
+    xml_writer.close();
+    drop(xml_writer);
+
+    let output = String::from_utf8(output_cursor).unwrap();
+    //println!("{}", output);
+    assert_eq!(output, format!("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<osm version=\"0.6\" generator=\"osmio/{}\">\n\t<node id=\"-1\" visible=\"true\" user=\"Username\" uid=\"2\" action=\"modify\" lat=\"1\" lon=\"2\">\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</node>\n\t<way id=\"-2\" visible=\"true\" user=\"Username\" uid=\"2\" action=\"modify\">\n\t\t<nd ref=\"-1\" />\n\t\t<nd ref=\"2\" />\n\t\t<nd ref=\"3\" />\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</way>\n\t<relation id=\"-2\" visible=\"true\" user=\"Username\" uid=\"2\" action=\"modify\">\n\t\t<member type=\"node\" ref=\"-1\" role=\"\" />\n\t\t<member type=\"way\" ref=\"-2\" role=\"\" />\n\t\t<tag k=\"highway\" v=\"nevar\" />\n\t</relation>\n</osm>", version()));
+
+
 }

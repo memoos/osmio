@@ -212,6 +212,7 @@ fn decode_dense_nodes(
             _lat_lon: Some((Lat(internal_lat), Lon(internal_lon))),
             _deleted: !denseinfo.get_visible().get(index).unwrap_or(&true),
             _changeset_id: Some(changeset_id as u32),
+            _action: None,
             _uid: Some(uid_id as u32),
             _user: Some(stringtable[user_sid as usize].clone().unwrap()),
             _version: Some(denseinfo.get_version()[index] as u32),
@@ -281,6 +282,7 @@ fn decode_ways(
             _nodes: nodes,
             _deleted: !way.get_info().get_visible(),
             _changeset_id: Some(way.get_info().get_changeset() as u32),
+            _action: None,
             _uid: Some(way.get_info().get_uid() as u32),
             _user: Some(
                 stringtable[way.get_info().get_user_sid() as usize]
@@ -367,6 +369,7 @@ fn decode_relations(
             _members: members,
             _deleted: !relation.get_info().get_visible(),
             _changeset_id: Some(relation.get_info().get_changeset() as u32),
+            _action: None,
             _uid: Some(relation.get_info().get_uid() as u32),
             _user: Some(
                 stringtable[relation.get_info().get_user_sid() as usize]

@@ -1,3 +1,5 @@
+use std::{fmt::Display, str::FromStr};
+
 use super::*;
 use crate::{Lat, Lon, OSMObj, OSMObjectType, ObjId, TimestampFormat};
 use smallvec::SmallVec;
@@ -23,6 +25,34 @@ macro_rules! func_call_inner_set {
     };
 }
 
+
+#[derive(PartialEq, Debug, Clone)]
+pub enum ActionType {
+    Delete,
+    Modify,
+}
+
+impl FromStr for ActionType {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "delete" => Ok(ActionType::Delete),
+            "modify" => Ok(ActionType::Modify),
+            _ => Err(()),
+        }
+    }
+}
+
+impl Display for ActionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ActionType::Delete => write!(f, "delete"),
+            ActionType::Modify => write!(f, "modify"),
+        }
+    }
+}
+
 #[derive(PartialEq, Debug, Builder, Clone)]
 #[builder(setter(strip_option))]
 pub struct StringNode {
@@ -35,6 +65,8 @@ pub struct StringNode {
     pub(crate) _deleted: bool,
     #[builder(default = "None")]
     pub(crate) _changeset_id: Option<u32>,
+    #[builder(default = "None")]
+    pub(crate) _action: Option<ActionType>,
     #[builder(default = "None")]
     pub(crate) _timestamp: Option<TimestampFormat>,
     #[builder(default = "None")]
@@ -60,6 +92,8 @@ pub struct StringWay {
     #[builder(default = "None")]
     pub(crate) _changeset_id: Option<u32>,
     #[builder(default = "None")]
+    pub(crate) _action: Option<ActionType>,
+    #[builder(default = "None")]
     pub(crate) _timestamp: Option<TimestampFormat>,
     #[builder(default = "None")]
     pub(crate) _uid: Option<u32>,
@@ -83,6 +117,8 @@ pub struct StringRelation {
     pub(crate) _deleted: bool,
     #[builder(default = "None")]
     pub(crate) _changeset_id: Option<u32>,
+    #[builder(default = "None")]
+    pub(crate) _action: Option<ActionType>,
     #[builder(default = "None")]
     pub(crate) _timestamp: Option<TimestampFormat>,
     #[builder(default = "None")]
@@ -133,6 +169,9 @@ impl OSMObjBase for StringOSMObj {
     fn changeset_id(&self) -> Option<u32> {
         func_call_inner_get!(self, changeset_id)
     }
+    fn action(&self) -> &Option<ActionType> {
+        func_call_inner_get!(self, action)
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         func_call_inner_get!(self, timestamp)
     }
@@ -154,6 +193,9 @@ impl OSMObjBase for StringOSMObj {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         func_call_inner_set!(self, set_changeset_id, val);
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        func_call_inner_set!(self, set_action, val);
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         func_call_inner_set!(self, set_timestamp, val);
@@ -293,6 +335,9 @@ impl OSMObjBase for StringNode {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -314,6 +359,9 @@ impl OSMObjBase for StringNode {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
@@ -393,6 +441,9 @@ impl OSMObjBase for StringWay {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -414,6 +465,9 @@ impl OSMObjBase for StringWay {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>){
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
@@ -499,6 +553,9 @@ impl OSMObjBase for StringRelation {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -520,6 +577,9 @@ impl OSMObjBase for StringRelation {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();

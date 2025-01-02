@@ -28,6 +28,7 @@ pub struct RcNode {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Rc<str>>,
@@ -42,6 +43,7 @@ pub struct RcWay {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Rc<str>>,
@@ -56,6 +58,7 @@ pub struct RcRelation {
     pub(crate) _version: Option<u32>,
     pub(crate) _deleted: bool,
     pub(crate) _changeset_id: Option<u32>,
+    pub(crate) _action: Option<ActionType>,
     pub(crate) _timestamp: Option<TimestampFormat>,
     pub(crate) _uid: Option<u32>,
     pub(crate) _user: Option<Rc<str>>,
@@ -84,6 +87,9 @@ impl OSMObjBase for RcOSMObj {
     fn changeset_id(&self) -> Option<u32> {
         func_call_inner_get!(self, changeset_id)
     }
+    fn action(&self) -> &Option<ActionType> {
+        func_call_inner_get!(self, action)
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         func_call_inner_get!(self, timestamp)
     }
@@ -105,6 +111,9 @@ impl OSMObjBase for RcOSMObj {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         func_call_inner_set!(self, set_changeset_id, val);
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        func_call_inner_set!(self, set_action, val);
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         func_call_inner_set!(self, set_timestamp, val);
@@ -263,6 +272,9 @@ impl OSMObjBase for RcNode {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -284,6 +296,9 @@ impl OSMObjBase for RcNode {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
@@ -383,6 +398,9 @@ impl OSMObjBase for RcWay {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -407,6 +425,9 @@ impl OSMObjBase for RcWay {
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_uid(&mut self, val: impl Into<Option<u32>>) {
         self._uid = val.into();
@@ -497,6 +518,9 @@ impl OSMObjBase for RcRelation {
     fn changeset_id(&self) -> Option<u32> {
         self._changeset_id
     }
+    fn action(&self) -> &Option<ActionType> {
+        &self._action
+    }
     fn timestamp(&self) -> &Option<TimestampFormat> {
         &self._timestamp
     }
@@ -518,6 +542,9 @@ impl OSMObjBase for RcRelation {
     }
     fn set_changeset_id(&mut self, val: impl Into<Option<u32>>) {
         self._changeset_id = val.into();
+    }
+    fn set_action(&mut self, val: impl Into<Option<ActionType>>) {
+        self._action = val.into();
     }
     fn set_timestamp(&mut self, val: impl Into<Option<TimestampFormat>>) {
         self._timestamp = val.into();

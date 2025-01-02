@@ -258,6 +258,7 @@ fn node_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj> {
     let id: ObjId = get_xml_attribute(attrs, "id").and_then(|x| x.parse().ok())?;
     let version = get_xml_attribute(attrs, "version").and_then(|x| x.parse().ok());
     let changeset_id = get_xml_attribute(attrs, "changeset").and_then(|x| x.parse().ok());
+    let action = get_xml_attribute(attrs, "action").and_then(|x| x.parse().ok());
     let timestamp =
         get_xml_attribute(attrs, "timestamp").map(|x| TimestampFormat::ISOString(x.to_owned()));
     let uid = get_xml_attribute(attrs, "uid").and_then(|x| x.parse().ok());
@@ -284,6 +285,7 @@ fn node_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj> {
         _version: version,
         _deleted: deleted,
         _changeset_id: changeset_id,
+        _action: action,
         _timestamp: timestamp,
         _uid: uid,
         _user: user.map(SmolStr::new),
@@ -297,6 +299,7 @@ fn way_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj> {
     let id: ObjId = get_xml_attribute(attrs, "id").and_then(|x| x.parse().ok())?;
     let version = get_xml_attribute(attrs, "version").and_then(|x| x.parse().ok());
     let changeset_id = get_xml_attribute(attrs, "changeset").and_then(|x| x.parse().ok());
+    let action = get_xml_attribute(attrs, "action").and_then(|x| x.parse().ok());
     let timestamp =
         get_xml_attribute(attrs, "timestamp").map(|x| TimestampFormat::ISOString(x.to_owned()));
     let uid = get_xml_attribute(attrs, "uid").and_then(|x| x.parse().ok());
@@ -316,6 +319,7 @@ fn way_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj> {
         _version: version,
         _deleted: deleted,
         _changeset_id: changeset_id,
+        _action: action,
         _timestamp: timestamp,
         _uid: uid,
         _user: user.map(SmolStr::new),
@@ -329,6 +333,7 @@ fn relation_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj
     let id: ObjId = get_xml_attribute(attrs, "id").and_then(|x| x.parse().ok())?;
     let version = get_xml_attribute(attrs, "version").and_then(|x| x.parse().ok());
     let changeset_id = get_xml_attribute(attrs, "changeset").and_then(|x| x.parse().ok());
+    let action = get_xml_attribute(attrs, "action").and_then(|x| x.parse().ok());
     let timestamp =
         get_xml_attribute(attrs, "timestamp").map(|x| TimestampFormat::ISOString(x.to_owned()));
     let uid = get_xml_attribute(attrs, "uid").and_then(|x| x.parse().ok());
@@ -348,6 +353,7 @@ fn relation_xml_elements_to_osm_obj(els: &mut [XmlEvent]) -> Option<StringOSMObj
         _version: version,
         _deleted: deleted,
         _changeset_id: changeset_id,
+        _action: action,
         _timestamp: timestamp,
         _uid: uid,
         _user: user.map(SmolStr::new),
@@ -464,6 +470,9 @@ impl<W: Write> OSMWriter<W> for XMLWriter<W> {
         }
         if let Some(changeset_id) = obj.changeset_id() {
             write!(self.writer, " changeset=\"{}\"", changeset_id)?;
+        }
+        if let Some(action) = obj.action() {
+            write!(self.writer, " action=\"{}\"", action)?;
         }
         if let Some(timestamp) = obj.timestamp() {
             write!(self.writer, " timestamp=\"{}\"", timestamp)?;
