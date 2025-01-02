@@ -735,7 +735,7 @@ fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
-pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
+pub(crate) fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
     unsafe {
         file_descriptor_proto_lazy.get(|| {
             parse_descriptor_proto()

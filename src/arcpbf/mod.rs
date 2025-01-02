@@ -43,15 +43,15 @@ fn blob_raw_data(blob: &mut fileformat::Blob) -> Option<Vec<u8>> {
 }
 
 impl<R: Read> FileReader<R> {
-    pub fn new(reader: R) -> Self {
+    pub(crate) fn new(reader: R) -> Self {
         FileReader { reader }
     }
 
-    pub fn inner(&self) -> &R {
+    pub(crate) fn inner(&self) -> &R {
         &self.reader
     }
 
-    pub fn into_inner(self) -> R {
+    pub(crate) fn into_inner(self) -> R {
         self.reader
     }
 
